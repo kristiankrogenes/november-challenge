@@ -6,10 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <title>November 200</title>
+    <title>November Challenge</title>
     <meta
       name="description"
-      content="Five runners, 200 km each, November 2026."
+      content="Five runners, 80 km each, November 2026."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -562,9 +562,9 @@
       <header class="hero">
         <div>
           <div class="eyebrow">Running challenge · 1–30 November 2026</div>
-          <h1>November <span>200</span></h1>
+          <h1>November <span>80</span></h1>
           <p>
-            Five runners, 200 km each, 30 days. Log every run below and the
+            Five runners, 80 km each, 30 days. Log every run below and the
             standings update for everyone.
           </p>
         </div>
@@ -693,7 +693,7 @@
           { name: "Lars", color: "--r4" },
           { name: "Jesper", color: "--r5" },
         ];
-        const GOAL = 200,
+        const GOAL = 80,
           DAYS = 30,
           YEAR = 2026,
           MONTH = 10; // November (0-based)
@@ -798,7 +798,7 @@
             row.innerHTML = `
         <div class="rank num"></div>
         <div class="who"><span class="name"><i class="dot"></i><span class="nm"></span></span><span class="chip"></span></div>
-        <div class="km num"><span class="v"></span><small>/ 200 km</small></div>
+        <div class="km num"><span class="v"></span><small>/ 80 km</small></div>
         <div class="bar" aria-hidden="true"><div class="fill"></div>${day > 0 ? '<div class="pace"></div>' : ""}</div>
         <div class="meta"><span class="runs-n"></span><span class="need"></span></div>`;
             row.querySelector(".rank").textContent = i + 1;
@@ -876,9 +876,9 @@
           el(
             "text",
             { x: W - R, y: y(GOAL) - 6, "text-anchor": "end", fill: fg },
-            "Goal 200",
+            "Goal 80",
           );
-          // Pace line: 0 at start of the month to 200 on the 30th.
+          // Pace line: 0 at start of the month to 80 on the 30th.
           el("line", {
             x1: x(0),
             y1: y(0),
@@ -958,7 +958,7 @@
           });
           const p = document.createElement("span");
           p.style.color = "var(--muted)";
-          p.textContent = "- - - pace to 200";
+          p.textContent = "- - - pace to 80";
           key.appendChild(p);
         }
 
