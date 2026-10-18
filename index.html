@@ -304,6 +304,13 @@
         font-size: 12px;
         color: var(--muted);
       }
+      .row .owe {
+        flex-basis: 100%;
+      }
+      .row .owe b {
+        color: var(--fg);
+        font-weight: 600;
+      }
       .legend-note {
         font-size: 13px;
         color: var(--muted);
@@ -575,13 +582,20 @@
         <div class="group">
           <div class="group-row">
             <span
-              >Group total <b class="num" id="groupKm">0.0</b> / 1 000 km</span
+              >Group total <b class="num" id="groupKm">0.0</b> / 400 km</span
             >
             <span id="groupPace"></span>
           </div>
           <div class="bar" aria-hidden="true">
             <div class="fill" id="groupFill" style="width: 0%"></div>
             <div class="pace" id="groupPaceMark" style="left: 0%"></div>
+          </div>
+          <div class="group-row">
+            <span
+              ><span id="potLabel">At stake for Kreftforeningen</span>
+              <b class="num" id="potKr">0 kr</b></span
+            >
+            <span>100 kr per km short of 80 on 30 Nov</span>
           </div>
         </div>
       </header>
@@ -594,7 +608,7 @@
         <div class="standings" id="standings"></div>
         <div class="legend-note">
           <i></i> The marker on each bar is where you need to be by the end of
-          today (6.67 km a day).
+          today (2.67 km a day).
         </div>
       </section>
 
@@ -697,6 +711,7 @@
           DAYS = 30,
           YEAR = 2026,
           MONTH = 10; // November (0-based)
+        const FINE = 100; // kr to Kreftforeningen per km short of GOAL at the end
         const NAMES = RUNNERS.map((r) => r.name);
         let runs = [];
         let loaded = false;
@@ -709,6 +724,8 @@
             minimumFractionDigits: 1,
             maximumFractionDigits: 1,
           });
+        const kr = (n) => n.toLocaleString("nb-NO") + " kr";
+        const owed = (km) => Math.round(Math.max(GOAL - km, 0) * FINE);
         const pad = (n) => String(n).padStart(2, "0");
         const isoLocal = (d) =>
           `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -722,6 +739,9 @@
           if (now < start) return 0;
           if (now > end) return DAYS;
           return now.getDate();
+        }
+        function challengeOver(now = new Date()) {
+          return now > new Date(YEAR, MONTH, DAYS, 23, 59, 59);
         }
         function daysUntilStart(now = new Date()) {
           const start = new Date(YEAR, MONTH, 1);
@@ -771,6 +791,7 @@
             day = challengeDay();
           const pace = (GOAL * day) / DAYS;
           const daysLeft = Math.max(DAYS - day + 1, 0);
+          const over = challengeOver();
           const ordered = RUNNERS.slice().sort(
             (a, b) =>
               t[b.name].km - t[a.name].km || a.name.localeCompare(b.name),
@@ -800,7 +821,7 @@
         <div class="who"><span class="name"><i class="dot"></i><span class="nm"></span></span><span class="chip"></span></div>
         <div class="km num"><span class="v"></span><small>/ 80 km</small></div>
         <div class="bar" aria-hidden="true"><div class="fill"></div>${day > 0 ? '<div class="pace"></div>' : ""}</div>
-        <div class="meta"><span class="runs-n"></span><span class="need"></span></div>`;
+        <div class="meta"><span class="runs-n"></span><span class="need"></span><span class="owe"></span></div>`;
             row.querySelector(".rank").textContent = i + 1;
             row.querySelector(".dot").style.background = `var(${r.color})`;
             row.querySelector(".nm").textContent = r.name;
@@ -818,11 +839,24 @@
               `${s.count} run${s.count === 1 ? "" : "s"}` +
               (s.last ? ` · last ${s.last.slice(8)}. Nov` : "");
             row.querySelector(".need").textContent = needed;
+            const owe = row.querySelector(".owe");
+            owe.textContent = over
+              ? "Owes Kreftforeningen "
+              : "At stake for Kreftforeningen ";
+            owe.appendChild(document.createElement("b")).textContent = kr(
+              owed(s.km),
+            );
             box.appendChild(row);
           });
 
           const group = Object.values(t).reduce((a, s) => a + s.km, 0);
           $("groupKm").textContent = fmt(group);
+          $("potLabel").textContent = over
+            ? "Owed to Kreftforeningen"
+            : "At stake for Kreftforeningen";
+          $("potKr").textContent = kr(
+            Object.values(t).reduce((a, s) => a + owed(s.km), 0),
+          );
           $("groupFill").style.width =
             Math.min((group / (GOAL * NAMES.length)) * 100, 100) + "%";
           $("groupPaceMark").style.left = `calc(${(pace / GOAL) * 100}% - 1px)`;
