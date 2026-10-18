@@ -97,7 +97,7 @@
       .wrap {
         max-width: 860px;
         margin: 0 auto;
-        padding-block: 32px 64px;
+        padding-block: 32px max(64px, env(safe-area-inset-bottom, 0px));
         display: flex;
         flex-direction: column;
         gap: 40px;
@@ -333,12 +333,10 @@
         border: 1px solid var(--line);
         border-radius: 6px;
         padding: 16px 12px 10px;
-        overflow-x: auto;
       }
       .chart-box svg {
         display: block;
         width: 100%;
-        min-width: 520px;
         height: auto;
       }
       .chart-box text {
@@ -435,6 +433,12 @@
         color: var(--fg);
         width: 100%;
         min-width: 0;
+        min-height: 44px;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      input[type="date"]::-webkit-date-and-time-value {
+        text-align: left;
       }
       input:focus-visible,
       button:focus-visible {
@@ -536,14 +540,32 @@
       }
 
       @media (max-width: 640px) {
+        .wrap {
+          padding-top: 20px;
+          gap: 32px;
+        }
         .hero {
           grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .hero h1 {
+          font-size: clamp(52px, 17vw, 88px);
         }
         .clock {
           text-align: left;
+          display: flex;
+          align-items: baseline;
+          gap: 10px;
+        }
+        .clock .big {
+          font-size: 44px;
+        }
+        h2 {
+          font-size: 26px;
         }
         .log-grid {
           grid-template-columns: 1fr;
+          gap: 20px;
         }
         .km {
           font-size: 26px;
@@ -555,6 +577,68 @@
         }
         .rank {
           font-size: 24px;
+        }
+        .row .meta {
+          gap: 2px 12px;
+        }
+        .chart-box {
+          padding: 12px 6px 8px;
+        }
+        form.add {
+          padding: 16px;
+        }
+        .fields {
+          grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+        }
+        /* Five equal, thumb-sized name buttons */
+        .who-pick {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 8px;
+        }
+        .who-pick span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 44px;
+          padding: 6px 4px;
+          text-align: center;
+        }
+        button.primary {
+          min-height: 48px;
+        }
+        /* Run rows: date + km on top, name and note below, delete on the right */
+        .runs li {
+          grid-template-columns: minmax(0, 1fr) auto auto;
+          grid-template-areas:
+            "date km del"
+            "rn rn del";
+          gap: 2px 12px;
+          align-items: center;
+          padding: 10px 0;
+        }
+        .runs .date {
+          grid-area: date;
+        }
+        .runs .rn {
+          grid-area: rn;
+        }
+        .runs .rk {
+          grid-area: km;
+          text-align: right;
+        }
+        .runs li > :last-child {
+          grid-area: del;
+        }
+        .del {
+          min-height: 44px;
+          min-width: 44px;
+          padding: 4px 6px;
+        }
+      }
+      @media (max-width: 359px) {
+        .fields {
+          grid-template-columns: 1fr;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -869,9 +953,11 @@
 
         function renderChart() {
           const svg = $("chart");
-          const W = 640,
-            H = 300,
-            L = 40,
+          // Draw at the box's real pixel width so labels stay 11px on phones instead of shrinking.
+          const W = Math.max(Math.round(svg.clientWidth) || 640, 280),
+            narrow = W < 480,
+            H = narrow ? 240 : 300,
+            L = narrow ? 32 : 40,
             R = 16,
             T = 12,
             B = 30;
@@ -881,6 +967,7 @@
           const x = (d) => L + (d / DAYS) * (W - L - R);
           const y = (v) => T + (1 - v / yMax) * (H - T - B);
           const NS = "http://www.w3.org/2000/svg";
+          svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
           svg.textContent = "";
           const el = (tag, attrs, text) => {
             const e = document.createElementNS(NS, tag);
@@ -973,12 +1060,14 @@
             el(
               "text",
               {
-                x: (L + W - R) / 2,
-                y: y(yMax / 2),
-                "text-anchor": "middle",
+                x: W - R,
+                y: y(yMax * 0.08),
+                "text-anchor": "end",
                 fill: muted,
               },
-              "Lines appear here once the first run is logged",
+              narrow
+                ? "No runs yet"
+                : "Lines appear here once the first run is logged",
             );
 
           const key = $("key");
@@ -1200,6 +1289,15 @@
             if (!document.hidden) loadRuns();
           });
         }
+
+        let chartW = $("chart").clientWidth;
+        new ResizeObserver(() => {
+          const w = $("chart").clientWidth;
+          if (w !== chartW) {
+            chartW = w;
+            renderChart();
+          }
+        }).observe($("chart"));
 
         const mq = window.matchMedia("(prefers-color-scheme: dark)");
         mq.addEventListener?.("change", renderChart);
