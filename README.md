@@ -1,6 +1,6 @@
-# November 200
+# November 80
 
-Kristian, Peder, Erik, Lars and Jesper each run 200 km in November 2026. `index.html` is the whole site; runs are stored in Supabase.
+Kristian, Peder, Erik, Lars, Jesper, Carl, Harald and Daniel each run 80 km in November 2026. `index.html` is the whole site; runs are stored in Supabase.
 
 ## 1. Set up Supabase (5 min)
 
@@ -37,6 +37,6 @@ Kristian, Peder, Erik, Lars and Jesper each run 200 km in November 2026. `index.
 ## Good to know
 
 - Anyone with the link can add and delete runs, no login. That's fine for a group of friends; just don't post the link publicly.
-- The database only accepts the five names, 0.1–100 km, and dates in November 2026.
+- The database only accepts the eight names, 0.1–100 km, and dates in November 2026.
 - Free Supabase projects pause after a week with no activity. If the page says it can't load runs before November starts, open the project in the dashboard and click **Restore**.
 - To check or fix data by hand: **Table Editor → runs** in Supabase.

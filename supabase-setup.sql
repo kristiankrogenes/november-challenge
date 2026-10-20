@@ -1,8 +1,8 @@
--- November 200: run the whole file once in Supabase → SQL Editor → New query → Run.
+-- November 80: run the whole file once in Supabase → SQL Editor → New query → Run.
 
 create table if not exists public.runs (
   id         uuid primary key default gen_random_uuid(),
-  runner     text not null check (runner in ('Kristian', 'Peder', 'Erik', 'Lars', 'Jesper')),
+  runner     text not null check (runner in ('Kristian', 'Peder', 'Erik', 'Lars', 'Jesper', 'Carl', 'Harald', 'Daniel')),
   km         numeric(5, 2) not null check (km > 0 and km <= 100),
   date       date not null check (date between '2026-11-01' and '2026-11-30'),
   note       text check (char_length(note) <= 80),

@@ -35,6 +35,9 @@
         --r3: #0f9b8e;
         --r4: #9b3fc4;
         --r5: #c99a06;
+        --r6: #d6336c;
+        --r7: #5a8f1c;
+        --r8: #8a5a2b;
         --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
         --body:
           "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -57,6 +60,9 @@
           --r3: #2cc3b3;
           --r4: #bf7ae6;
           --r5: #e8bd2e;
+          --r6: #f06595;
+          --r7: #8bc34a;
+          --r8: #c99268;
           color-scheme: dark;
         }
       }
@@ -76,6 +82,9 @@
         --r3: #2cc3b3;
         --r4: #bf7ae6;
         --r5: #e8bd2e;
+        --r6: #f06595;
+        --r7: #8bc34a;
+        --r8: #c99268;
         color-scheme: dark;
       }
       * {
@@ -655,7 +664,7 @@
           <div class="eyebrow">Running challenge · 1–30 November 2026</div>
           <h1>November <span>80</span></h1>
           <p>
-            Seven runners, 80 km each, 30 days. Log every run below and the
+            Eight runners, 80 km each, 30 days. Log every run below and the
             standings update for everyone.
           </p>
         </div>
@@ -666,7 +675,7 @@
         <div class="group">
           <div class="group-row">
             <span
-              >Group total <b class="num" id="groupKm">0.0</b> / 560 km</span
+              >Group total <b class="num" id="groupKm">0.0</b> / 640 km</span
             >
             <span id="groupPace"></span>
           </div>
@@ -792,6 +801,7 @@
           { name: "Jesper", color: "--r5" },
           { name: "Carl", color: "--r6" },
           { name: "Harald", color: "--r7" },
+          { name: "Daniel", color: "--r8" },
         ];
         const GOAL = 80,
           DAYS = 30,
